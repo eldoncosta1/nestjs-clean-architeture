@@ -15,3 +15,15 @@ export const ResultSuccess = <T, E>(value: T): Result<T, E> => {
     value,
   }
 }
+
+export const isError = <T, E>(
+  result: Result<T, E>,
+): result is ResultError<E> => {
+  return result.success === false
+}
+
+export const isSuccess = <T, E>(
+  result: Result<T, E>,
+): result is ResultSuccess<T> => {
+  return result.success === true
+}

@@ -1,5 +1,5 @@
 import { AppModule } from '@/infra/app.module'
-import { PrismaService } from '@/infra/prisma/prisma.service'
+import { PrismaService } from '@/infra/database/prisma/prisma.service'
 import { JwtService } from '@nestjs/jwt'
 import { INestApplication } from '@nestjs/common'
 import { Test } from '@nestjs/testing'
@@ -24,8 +24,12 @@ describe('Fetch recent questions (E2E)', async () => {
   })
 
   afterAll(async () => {
-    await app.close()
-    await prisma.$disconnect()
+    if (app) {
+      await app.close()
+    }
+    if (prisma) {
+      await prisma.$disconnect()
+    }
   })
 
   test('[GET] /questions', async () => {

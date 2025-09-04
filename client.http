@@ -1,4 +1,4 @@
-@baseUrl = http://localhost:3333
+@baseUrl = http://localhost:5555
 @access_token = {{authenticate.response.body.access_token}}
 
 # @name createAccount
@@ -7,7 +7,7 @@ Content-Type: application/json
 
 {
   "name": "John Doe",
-  "email": "john.doe+2@example.com",
+  "email": "john.doe+3@example.com",
   "password": "123456"
 }
 
@@ -30,7 +30,7 @@ Content-Type: application/json
 Authorization: Bearer {{access_token}}
 
 {
-  "title": "New question 2",
+  "title": "New question 4",
   "content": "Content of the question"
 }
 

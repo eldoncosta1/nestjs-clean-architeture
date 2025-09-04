@@ -8,13 +8,13 @@ import { Slug } from './value-objects/slug'
 
 export type QuestionProps = {
   authorId: UniqueEntityID
-  bestAnswerId?: UniqueEntityID
+  bestAnswerId?: UniqueEntityID | null
   attachments: QuestionAttachmentList
   title: string
   slug: Slug
   content: string
-  createdAt: string
-  updatedAt?: string
+  createdAt: Date
+  updatedAt?: Date | null
 }
 
 export class Question extends AggregateRoot<QuestionProps> {
@@ -63,13 +63,10 @@ export class Question extends AggregateRoot<QuestionProps> {
     this.touch()
   }
 
-  set bestAnswerId(bestAnswerId: UniqueEntityID | undefined) {
+  set bestAnswerId(bestAnswerId: UniqueEntityID | null | undefined) {
     if (bestAnswerId === undefined) return
 
-    if (
-      this.props.bestAnswerId === undefined ||
-      !this.props.bestAnswerId.equals(bestAnswerId)
-    ) {
+    if (bestAnswerId && !this.props.bestAnswerId?.equals(bestAnswerId)) {
       this.addDomainEvent(new QuestionBestAnswerChosenEvent(this, bestAnswerId))
     }
 
@@ -89,7 +86,7 @@ export class Question extends AggregateRoot<QuestionProps> {
   }
 
   private touch() {
-    this.props.updatedAt = new Date().toUTCString()
+    this.props.updatedAt = new Date()
   }
 
   static create(
@@ -101,7 +98,7 @@ export class Question extends AggregateRoot<QuestionProps> {
         ...props,
         slug: props.slug ?? Slug.createFromText(props.title),
         attachments: props.attachments ?? new QuestionAttachmentList(),
-        createdAt: props.createdAt ?? new Date().toUTCString(),
+        createdAt: props.createdAt ?? new Date(),
       },
       id,
     )

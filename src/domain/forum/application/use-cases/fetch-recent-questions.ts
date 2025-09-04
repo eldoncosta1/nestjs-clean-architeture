@@ -1,6 +1,7 @@
 import { Result } from '@/core/result'
 import { Question } from '../../enterprise/entities/question'
 import { IQuestionsRepository } from '../repositories/questions-repository'
+import { Injectable, Inject } from '@nestjs/common'
 
 type FetchRecentQuestionsUseCaseRequest = {
   page: number
@@ -13,8 +14,12 @@ type FetchRecentQuestionsUseCaseResponse = Result<
   null
 >
 
+@Injectable()
 export class FetchRecentQuestionsUseCase {
-  constructor(private questionsRepository: IQuestionsRepository) {}
+  constructor(
+    @Inject(IQuestionsRepository)
+    private questionsRepository: IQuestionsRepository,
+  ) {}
 
   async execute({
     page,

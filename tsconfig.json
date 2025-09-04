@@ -2,14 +2,12 @@
   "compilerOptions": {
     "module": "ESNext",
     "moduleResolution": "bundler",
-    "resolvePackageJsonExports": true,
     "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
     "isolatedModules": true,
-    "declaration": true,
     "removeComments": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "allowSyntheticDefaultImports": true,
     "target": "ES2023",
     "sourceMap": true,
     "outDir": "./dist",
@@ -22,9 +20,11 @@
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "noFallthroughCasesInSwitch": false,
+    "allowImportingTsExtensions": false,
+    "resolveJsonModule": true,
     "paths": {
       "@/*": ["./src/*"]
     },
-    "types": ["vitest/globals"]
+    "types": ["vitest/globals", "node"]
   }
 }

@@ -1,5 +1,5 @@
 import { AppModule } from '@/infra/app.module'
-import { PrismaService } from '@/infra/prisma/prisma.service'
+import { PrismaService } from '@/infra/database/prisma/prisma.service'
 import { INestApplication } from '@nestjs/common'
 import { Test } from '@nestjs/testing'
 import request from 'supertest'
@@ -21,8 +21,12 @@ describe('Create account (E2E)', async () => {
   })
 
   afterAll(async () => {
-    await app.close()
-    await prisma.$disconnect()
+    if (app) {
+      await app.close()
+    }
+    if (prisma) {
+      await prisma.$disconnect()
+    }
   })
 
   test('[POST] /accounts', async () => {

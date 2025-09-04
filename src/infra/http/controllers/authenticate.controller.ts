@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Post,
@@ -7,9 +8,9 @@ import {
 } from '@nestjs/common'
 import { z } from 'zod'
 import { ZodValidationPipe } from '../pipes/zod-validation-pipe'
-import { JwtService } from '@nestjs/jwt'
-import { PrismaService } from '@/infra/prisma/prisma.service'
-import { compare } from 'bcryptjs'
+import { AuthenticateStudentUseCase } from '@/domain/forum/application/use-cases/authenticate-student'
+import { isError } from '@/core/result'
+import { Public } from '@/infra/auth/public'
 
 const authenticateBodySchema = z.object({
   email: z.string().email(),
@@ -19,10 +20,10 @@ const authenticateBodySchema = z.object({
 type AuthenticateBodySchema = z.infer<typeof authenticateBodySchema>
 
 @Controller('/sessions')
+@Public()
 export class AuthenticateController {
   constructor(
-    private readonly jwtService: JwtService,
-    private readonly prismaService: PrismaService,
+    private readonly authenticateStudentUseCase: AuthenticateStudentUseCase,
   ) {}
 
   @Post()
@@ -30,25 +31,23 @@ export class AuthenticateController {
   async handle(@Body() body: AuthenticateBodySchema) {
     const { email, password } = authenticateBodySchema.parse(body)
 
-    const user = await this.prismaService.user.findUnique({
-      where: {
-        email,
-      },
+    const result = await this.authenticateStudentUseCase.execute({
+      email,
+      password,
     })
 
-    if (!user) {
-      throw new UnauthorizedException('User or password incorrect')
+    if (isError(result)) {
+      const error = result.error
+
+      switch (error.type) {
+        case 'WRONG_CREDENTIALS':
+          throw new UnauthorizedException(error.message)
+        default:
+          throw new BadRequestException(error.message)
+      }
     }
 
-    const isPasswordValid = await compare(password, user.password)
-
-    if (!isPasswordValid) {
-      throw new UnauthorizedException('User or password incorrect')
-    }
-
-    const accessToken = this.jwtService.sign({
-      sub: user.id,
-    })
+    const accessToken = result.value.accessToken
 
     return {
       access_token: accessToken,
