@@ -4,6 +4,7 @@ import { InMemoryQuestionAttachmentsRepository } from 'test/repositories/in-memo
 import { InMemoryQuestionsRepository } from 'test/repositories/in-memory-questions-repository'
 import { Question } from '../../enterprise/entities/question'
 import { GetQuestionBySlugUseCase } from './get-question-by-slug'
+import { Slug } from '../../enterprise/entities/value-objects/slug'
 
 let inMemoryQuestionsRepository: InMemoryQuestionsRepository
 let inMemoryQuestionAttachmentsRepository: InMemoryQuestionAttachmentsRepository
@@ -20,11 +21,12 @@ describe('Get Question By Slug Usecase', () => {
   })
 
   it('should be able to get a question by slug', async () => {
-    const newQuestion = makeQuestion()
+    const slug = Slug.create('example-question')
+    const newQuestion = makeQuestion({ slug })
     await inMemoryQuestionsRepository.create(newQuestion)
 
     const result = (await sut.execute({
-      slug: 'example-question',
+      slug: slug.value,
     })) as ResultSuccess<{
       question: Question
     }>

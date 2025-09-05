@@ -1,6 +1,7 @@
 import { Result } from '@/core/result'
 import { AnswerComment } from '../../enterprise/entities/answer-comment'
 import { IAnswerCommentsRepository } from '../repositories/answer-comments-repository'
+import { Injectable } from '@nestjs/common'
 
 type FetchAnswerCommentsUseCaseRequest = {
   answerId: string
@@ -14,6 +15,7 @@ type FetchAnswerCommentsUseCaseResponse = Result<
   null
 >
 
+@Injectable()
 export class FetchAnswerCommentsUseCase {
   constructor(private answerCommentsRepository: IAnswerCommentsRepository) {}
 
