@@ -4,20 +4,28 @@ import { JwtService } from '@nestjs/jwt'
 import { INestApplication } from '@nestjs/common'
 import { Test } from '@nestjs/testing'
 import request from 'supertest'
+import { StudentFactory } from 'test/factories/make-student'
+import { QuestionFactory } from 'test/factories/make-question'
+import { DatabaseModule } from '@/infra/database/database.module'
 
 describe('Fetch recent questions (E2E)', async () => {
   let app: INestApplication
   let prisma: PrismaService
   let jwt: JwtService
+  let studentFactory: StudentFactory
+  let questionFactory: QuestionFactory
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
-      imports: [AppModule],
+      imports: [AppModule, DatabaseModule],
+      providers: [StudentFactory, QuestionFactory],
     }).compile()
 
     app = moduleRef.createNestApplication()
 
     prisma = moduleRef.get(PrismaService)
+    studentFactory = moduleRef.get(StudentFactory)
+    questionFactory = moduleRef.get(QuestionFactory)
     jwt = moduleRef.get(JwtService)
 
     await app.init()
@@ -33,32 +41,21 @@ describe('Fetch recent questions (E2E)', async () => {
   })
 
   test('[GET] /questions', async () => {
-    const user = await prisma.user.create({
-      data: {
-        name: 'John Doe',
-        email: 'john.doe@example.com',
-        password: '123456',
-      },
+    const user = await studentFactory.makePrismaStudent()
+
+    const accessToken = jwt.sign({ sub: user.id.toString() })
+
+    const question = questionFactory.makePrismaQuestion({
+      title: 'New question',
+      authorId: user.id,
     })
 
-    await prisma.question.createMany({
-      data: [
-        {
-          title: 'New question',
-          content: 'Question content',
-          authorId: user.id,
-          slug: 'new-question',
-        },
-        {
-          title: 'New question 2',
-          content: 'Question content 2',
-          authorId: user.id,
-          slug: 'new-question-2',
-        },
-      ],
+    const question2 = questionFactory.makePrismaQuestion({
+      title: 'New question 2',
+      authorId: user.id,
     })
 
-    const accessToken = jwt.sign({ sub: user.id })
+    await Promise.all([question, question2])
 
     const response = await request(app.getHttpServer())
       .get('/questions')

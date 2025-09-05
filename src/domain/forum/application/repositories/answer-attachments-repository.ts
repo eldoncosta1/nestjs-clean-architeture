@@ -1,6 +1,6 @@
 import { AnswerAttachment } from '@/domain/forum/enterprise/entities/answer-attachment'
 
-export interface IAnswerAttachmentsRepository {
-  findManyByAnswerId(answerId: string): Promise<AnswerAttachment[]>
-  deleteManyByAnswerId(answerId: string): Promise<void>
+export abstract class IAnswerAttachmentsRepository {
+  abstract findManyByAnswerId(answerId: string): Promise<AnswerAttachment[]>
+  abstract deleteManyByAnswerId(answerId: string): Promise<void>
 }

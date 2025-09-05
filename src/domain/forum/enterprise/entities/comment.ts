@@ -4,8 +4,8 @@ import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 export interface CommentProps {
   authorId: UniqueEntityID
   content: string
-  createdAt: string
-  updatedAt?: string
+  createdAt: Date
+  updatedAt?: Date | null
 }
 
 export abstract class Comment<
@@ -33,6 +33,6 @@ export abstract class Comment<
   }
 
   private touch() {
-    this.props.updatedAt = new Date().toUTCString()
+    this.props.updatedAt = new Date()
   }
 }

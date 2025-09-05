@@ -9,8 +9,8 @@ export interface AnswerProps {
   questionId: UniqueEntityID
   content: string
   attachments: AnswerAttachmentList
-  createdAt: string
-  updatedAt?: string
+  createdAt: Date
+  updatedAt?: Date | null
 }
 
 export class Answer extends AggregateRoot<AnswerProps> {
@@ -53,7 +53,7 @@ export class Answer extends AggregateRoot<AnswerProps> {
   }
 
   private touch() {
-    this.props.updatedAt = new Date().toUTCString()
+    this.props.updatedAt = new Date()
   }
 
   static create(
@@ -64,7 +64,7 @@ export class Answer extends AggregateRoot<AnswerProps> {
       {
         ...props,
         attachments: props.attachments ?? new AnswerAttachmentList(),
-        createdAt: props.createdAt ?? new Date().toUTCString(),
+        createdAt: props.createdAt ?? new Date(),
       },
       id,
     )

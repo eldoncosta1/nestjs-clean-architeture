@@ -1,5 +1,6 @@
 import { AppModule } from '@/infra/app.module'
 import { PrismaService } from '@/infra/database/prisma/prisma.service'
+import { faker } from '@faker-js/faker'
 import { INestApplication } from '@nestjs/common'
 import { Test } from '@nestjs/testing'
 import request from 'supertest'
@@ -30,9 +31,11 @@ describe('Create account (E2E)', async () => {
   })
 
   test('[POST] /accounts', async () => {
+    const email = faker.internet.email()
+
     const response = await request(app.getHttpServer()).post('/accounts').send({
-      name: 'John Doe',
-      email: 'john.doe@example.com',
+      name: faker.person.fullName(),
+      email,
       password: '123456',
     })
 
@@ -40,7 +43,7 @@ describe('Create account (E2E)', async () => {
 
     const user = await prisma.user.findUnique({
       where: {
-        email: 'john.doe@example.com',
+        email,
       },
     })
 

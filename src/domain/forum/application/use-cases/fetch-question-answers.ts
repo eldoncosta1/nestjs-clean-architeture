@@ -1,6 +1,7 @@
 import { Result } from '@/core/result'
 import { Answer } from '@/domain/forum/enterprise/entities/answer'
 import { IAnswersRepository } from '../repositories/answers-repository'
+import { Injectable } from '@nestjs/common'
 
 type FetchQuestionAnswersUseCaseRequest = {
   questionId: string
@@ -14,6 +15,7 @@ type FetchQuestionAnswersUseCaseResponse = Result<
   null
 >
 
+@Injectable()
 export class FetchQuestionAnswersUseCase {
   constructor(private answersRepository: IAnswersRepository) {}
 

@@ -18,7 +18,7 @@ export class AnswerComment extends Comment<AnswerCommentProps> {
     const answerComment = new AnswerComment(
       {
         ...props,
-        createdAt: props.createdAt ?? new Date().toUTCString(),
+        createdAt: props.createdAt ?? new Date(),
       },
       id,
     )

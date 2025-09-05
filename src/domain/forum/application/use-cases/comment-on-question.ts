@@ -4,6 +4,7 @@ import { ResourceNotFoundError } from '../../../../core/errors/resoure-not-found
 import { QuestionComment } from '../../enterprise/entities/question-comment'
 import { IQuestionCommentsRepository } from '../repositories/question-comments-repository'
 import { IQuestionsRepository } from '../repositories/questions-repository'
+import { Injectable } from '@nestjs/common'
 
 type CommentOnQuestionUseCaseRequest = {
   authorId: string
@@ -18,6 +19,7 @@ type CommentOnQuestionUseCaseResponse = Result<
   ResourceNotFoundError
 >
 
+@Injectable()
 export class CommentOnQuestionUseCase {
   constructor(
     private questionsRepository: IQuestionsRepository,
@@ -37,7 +39,7 @@ export class CommentOnQuestionUseCase {
 
     const questionComment = QuestionComment.create({
       authorId: new UniqueEntityID(authorId),
-      questionId: new UniqueEntityID(authorId),
+      questionId: new UniqueEntityID(questionId),
       content,
     })
 

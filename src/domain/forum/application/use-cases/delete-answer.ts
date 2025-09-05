@@ -2,6 +2,7 @@ import { Result, ResultError } from '@/core/result'
 import { NotAllowedError } from '../../../../core/errors/not-allowed-error'
 import { ResourceNotFoundError } from '../../../../core/errors/resoure-not-found-error'
 import { IAnswersRepository } from '../repositories/answers-repository'
+import { Injectable } from '@nestjs/common'
 
 type DeleteAnswerUseCaseRequest = {
   answerId: string
@@ -13,6 +14,7 @@ type DeleteAnswerUseCaseResponse = Result<
   ResourceNotFoundError | NotAllowedError
 >
 
+@Injectable()
 export class DeleteAnswerUseCase {
   constructor(private answersRepository: IAnswersRepository) {}
 

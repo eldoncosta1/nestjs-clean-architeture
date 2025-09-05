@@ -18,6 +18,7 @@ export class PrismaQuestionsRepository implements IQuestionsRepository {
 
     return question ? PrismaQuestionMapper.toDomain(question) : null
   }
+
   async findBySlug(slug: string): Promise<Question | null> {
     const question = await this.prisma.question.findUnique({
       where: {
@@ -26,6 +27,7 @@ export class PrismaQuestionsRepository implements IQuestionsRepository {
     })
     return question ? PrismaQuestionMapper.toDomain(question) : null
   }
+
   async findManyRecent({ page }: PaginationParams): Promise<Question[]> {
     const questions = await this.prisma.question.findMany({
       orderBy: {
@@ -37,6 +39,7 @@ export class PrismaQuestionsRepository implements IQuestionsRepository {
 
     return questions.map(PrismaQuestionMapper.toDomain)
   }
+
   async save(question: Question): Promise<Question> {
     const prismaQuestion = PrismaQuestionMapper.toPersistence(question)
 
@@ -47,6 +50,7 @@ export class PrismaQuestionsRepository implements IQuestionsRepository {
 
     return PrismaQuestionMapper.toDomain(updatedQuestion)
   }
+
   async create(question: Question): Promise<void> {
     const prismaQuestion = PrismaQuestionMapper.toPersistence(question)
 
@@ -54,6 +58,7 @@ export class PrismaQuestionsRepository implements IQuestionsRepository {
       data: prismaQuestion,
     })
   }
+
   async delete(question: Question): Promise<void> {
     await this.prisma.question.delete({
       where: { id: question.id.toString() },
