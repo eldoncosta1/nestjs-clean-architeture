@@ -82,4 +82,39 @@ describe('Edit Answer Usecase', () => {
     expect(result.success).toBe(false)
     expect(result.error.type).toEqual('NOT_ALLOWED')
   })
+
+  it('should sync new attachments when a answer is edited', async () => {
+    const newAnswer = makeAnswer(
+      {
+        authorId: new UniqueEntityID('author-1'),
+      },
+      new UniqueEntityID('answer-1'),
+    )
+    await inMemoryAnswersRepository.create(newAnswer)
+
+    inMemoryAnswerAttachmentsRepository.items.push(
+      makeAnswerAttachment({
+        answerId: newAnswer.id,
+        attachmentId: new UniqueEntityID('1'),
+      }),
+      makeAnswerAttachment({
+        answerId: newAnswer.id,
+        attachmentId: new UniqueEntityID('2'),
+      }),
+    )
+
+    const result = await sut.execute({
+      authorId: 'author-1',
+      answerId: newAnswer.id.toString(),
+      content: 'Conteudo teste',
+      attachmentsIds: ['1', '3'],
+    })
+
+    expect(result.success).toBe(true)
+    expect(inMemoryAnswerAttachmentsRepository.items).toHaveLength(2)
+    expect(inMemoryAnswerAttachmentsRepository.items).toEqual([
+      expect.objectContaining({ attachmentId: new UniqueEntityID('1') }),
+      expect.objectContaining({ attachmentId: new UniqueEntityID('3') }),
+    ])
+  })
 })

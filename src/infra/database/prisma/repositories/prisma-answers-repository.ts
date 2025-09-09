@@ -4,10 +4,14 @@ import type { Answer } from '@/domain/forum/enterprise/entities/answer'
 import type { PaginationParams } from '@/core/repositories/pagination-params'
 import { PrismaService } from '../prisma.service'
 import { PrismaAnswerMapper } from '../mappers/prisma-answer-mapper'
+import { IAnswerAttachmentsRepository } from '@/domain/forum/application/repositories/answer-attachments-repository'
 
 @Injectable()
 export class PrismaAnswersRepository implements IAnswersRepository {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private answerAttachmentsRepository: IAnswerAttachmentsRepository,
+  ) {}
 
   async findById(id: string): Promise<Answer | null> {
     const answer = await this.prisma.answer.findUnique({
@@ -42,6 +46,10 @@ export class PrismaAnswersRepository implements IAnswersRepository {
     await this.prisma.answer.create({
       data: prismaAnswer,
     })
+
+    await this.answerAttachmentsRepository.createMany(
+      answer.attachments.getItems(),
+    )
   }
 
   async save(answer: Answer): Promise<Answer> {
@@ -51,6 +59,14 @@ export class PrismaAnswersRepository implements IAnswersRepository {
       where: { id: prismaAnswer.id },
       data: prismaAnswer,
     })
+
+    await this.answerAttachmentsRepository.createMany(
+      answer.attachments.getNewItems(),
+    )
+
+    await this.answerAttachmentsRepository.deleteMany(
+      answer.attachments.getRemovedItems(),
+    )
 
     return PrismaAnswerMapper.toDomain(updatedAnswer)
   }
