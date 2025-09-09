@@ -4,10 +4,14 @@ import { PrismaService } from '../prisma.service'
 import type { PaginationParams } from '@/core/repositories/pagination-params'
 import type { Question } from '@/domain/forum/enterprise/entities/question'
 import { PrismaQuestionMapper } from '../mappers/prisma-question-mapper'
+import { IQuestionAttachmentsRepository } from '@/domain/forum/application/repositories/question-attachments-repository'
 
 @Injectable()
 export class PrismaQuestionsRepository implements IQuestionsRepository {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private questionAttachmentsRepository: IQuestionAttachmentsRepository,
+  ) {}
 
   async findById(id: string): Promise<Question | null> {
     const question = await this.prisma.question.findUnique({
@@ -48,6 +52,14 @@ export class PrismaQuestionsRepository implements IQuestionsRepository {
       data: prismaQuestion,
     })
 
+    await this.questionAttachmentsRepository.createMany(
+      question.attachments.getNewItems(),
+    )
+
+    await this.questionAttachmentsRepository.deleteMany(
+      question.attachments.getRemovedItems(),
+    )
+
     return PrismaQuestionMapper.toDomain(updatedQuestion)
   }
 
@@ -57,6 +69,10 @@ export class PrismaQuestionsRepository implements IQuestionsRepository {
     await this.prisma.question.create({
       data: prismaQuestion,
     })
+
+    await this.questionAttachmentsRepository.createMany(
+      question.attachments.getItems(),
+    )
   }
 
   async delete(question: Question): Promise<void> {

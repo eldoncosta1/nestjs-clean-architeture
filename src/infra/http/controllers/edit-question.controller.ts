@@ -16,6 +16,7 @@ import { isError } from '@/core/result'
 const createQuestionBodySchema = z.object({
   title: z.string(),
   content: z.string(),
+  attachments: z.array(z.uuid()).optional(),
 })
 
 type EditQuestionBodySchema = z.infer<typeof createQuestionBodySchema>
@@ -34,14 +35,14 @@ export class EditQuestionController {
     body: EditQuestionBodySchema,
     @Param('id') questionId: string,
   ) {
-    const { title, content } = body
+    const { title, content, attachments } = body
     const { sub: userId } = user
 
     const result = await this.editQuestionUseCase.execute({
       title,
       content,
       authorId: userId,
-      attachmentsIds: [],
+      attachmentsIds: attachments ?? [],
       questionId,
     })
 

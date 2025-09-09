@@ -25,6 +25,7 @@
     "prisma:fix": "powershell -ExecutionPolicy Bypass -File ./fix-prisma-windows.ps1"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.883.0",
     "@faker-js/faker": "^10.0.0",
     "@nestjs/common": "^11.0.1",
     "@nestjs/config": "^4.0.2",
@@ -50,6 +51,7 @@
     "@nestjs/testing": "^11.0.1",
     "@swc/core": "^1.13.4",
     "@types/express": "^5.0.0",
+    "@types/multer": "^2.0.0",
     "@types/node": "^22.10.7",
     "@types/passport-jwt": "^4.0.1",
     "@types/supertest": "^6.0.3",
