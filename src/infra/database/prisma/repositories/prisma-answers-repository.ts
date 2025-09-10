@@ -5,7 +5,7 @@ import type { PaginationParams } from '@/core/repositories/pagination-params'
 import { PrismaService } from '../prisma.service'
 import { PrismaAnswerMapper } from '../mappers/prisma-answer-mapper'
 import { IAnswerAttachmentsRepository } from '@/domain/forum/application/repositories/answer-attachments-repository'
-import { DomainEvents } from '@/core/events/domain-events'
+import { DomainEventsWithOutbox } from '@/core/events/domain-events-with-outbox'
 
 @Injectable()
 export class PrismaAnswersRepository implements IAnswersRepository {
@@ -52,7 +52,7 @@ export class PrismaAnswersRepository implements IAnswersRepository {
       answer.attachments.getItems(),
     )
 
-    DomainEvents.dispatchEventsForAggregate(answer.id)
+    await DomainEventsWithOutbox.dispatchEventsForAggregate(answer.id)
   }
 
   async save(answer: Answer): Promise<Answer> {
@@ -71,7 +71,7 @@ export class PrismaAnswersRepository implements IAnswersRepository {
       answer.attachments.getRemovedItems(),
     )
 
-    DomainEvents.dispatchEventsForAggregate(answer.id)
+    await DomainEventsWithOutbox.dispatchEventsForAggregate(answer.id)
 
     return PrismaAnswerMapper.toDomain(updatedAnswer)
   }

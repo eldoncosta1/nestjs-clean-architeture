@@ -87,6 +87,8 @@ Implementa os adaptadores e integrações externas:
 - [📐 Padrões DDD Implementados](./ddd-patterns.md)
 - [🎯 Princípios SOLID](./solid-principles.md)  
 - [⚡ Domain Events e Event-Driven Architecture](./domain-events.md)
+- [🐰 Integração RabbitMQ + Domain Events](./rabbitmq-integration.md)
+- [🚀 Próximos Passos - Implementação RabbitMQ](./proximos-passos-rabbitmq.md)
 
 ## ⚠️ Limitações Conhecidas
 
@@ -118,7 +120,17 @@ Para projetos que exigem maior controle sobre transações distribuídas, o **Mi
 - Impacto na curva de aprendizado da equipe
 - Avaliação da necessidade real de consistência forte vs. eventual
 
-> 💡 **Recomendação**: Para casos simples, o Prisma atende bem. Para sistemas com alta complexidade transacional entre domínios, considere migrar para MikroORM ou implementar padrões como Saga/Outbox.
+#### ✅ **Solução Implementada: RabbitMQ + Outbox Pattern**
+Este projeto agora implementa uma solução robusta que resolve essas limitações:
+
+- **Outbox Pattern**: Eventos são salvos na mesma transação das entidades
+- **RabbitMQ Integration**: Sistema distribuído de mensageria
+- **Guaranteed Delivery**: Eventos não são perdidos mesmo com falhas
+- **Scalability**: Suporte a múltiplas instâncias e processamento paralelo
+
+> 📖 **Documentação**: Veja [Integração RabbitMQ + Domain Events](./rabbitmq-integration.md) para detalhes completos da implementação.
+
+> 💡 **Recomendação**: A integração RabbitMQ resolve as limitações do Prisma mantendo a arquitetura DDD. Para casos ainda mais complexos, considere Event Sourcing ou migração para MikroORM.
 
 ## 🔧 Como Começar
 

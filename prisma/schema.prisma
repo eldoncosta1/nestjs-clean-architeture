@@ -110,3 +110,27 @@ model Notification {
 
   @@map("notifications")
 }
+
+model OutboxEvent {
+  id            String    @id @default(uuid())
+  eventId       String    @unique @map("event_id")
+  eventType     String    @map("event_type")
+  aggregateId   String    @map("aggregate_id")
+  aggregateType String    @map("aggregate_type")
+  eventVersion  Int       @default(1) @map("event_version")
+  occurredAt    DateTime  @map("occurred_at")
+  payload       Json
+  processedAt   DateTime? @map("processed_at")
+  published     Boolean   @default(false)
+  attempts      Int       @default(0)
+  lastAttemptAt DateTime? @map("last_attempt_at")
+  errorMessage  String?   @map("error_message")
+  createdAt     DateTime  @default(now()) @map("created_at")
+
+  @@index([published])
+  @@index([occurredAt])
+  @@index([aggregateId])
+  @@index([eventType])
+  @@index([attempts, published])
+  @@map("outbox_events")
+}

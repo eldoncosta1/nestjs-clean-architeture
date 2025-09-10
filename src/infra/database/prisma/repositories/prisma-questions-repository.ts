@@ -7,7 +7,7 @@ import { PrismaQuestionMapper } from '../mappers/prisma-question-mapper'
 import { IQuestionAttachmentsRepository } from '@/domain/forum/application/repositories/question-attachments-repository'
 import type { QuestionDetails } from '@/domain/forum/enterprise/entities/value-objects/question-details'
 import { PrismaQuestionDetailsMapper } from '../mappers/prisma-question-details-mapper'
-import { DomainEvents } from '@/core/events/domain-events'
+import { DomainEventsWithOutbox } from '@/core/events/domain-events-with-outbox'
 import { CacheRepository } from '@/infra/cache/cache-respository'
 
 @Injectable()
@@ -94,7 +94,7 @@ export class PrismaQuestionsRepository implements IQuestionsRepository {
 
     await this.cache.delete(`question:${question.slug.value}:details`)
 
-    DomainEvents.dispatchEventsForAggregate(question.id)
+    await DomainEventsWithOutbox.dispatchEventsForAggregate(question.id)
 
     return PrismaQuestionMapper.toDomain(updatedQuestion)
   }
@@ -110,7 +110,7 @@ export class PrismaQuestionsRepository implements IQuestionsRepository {
       question.attachments.getItems(),
     )
 
-    DomainEvents.dispatchEventsForAggregate(question.id)
+    await DomainEventsWithOutbox.dispatchEventsForAggregate(question.id)
   }
 
   async delete(question: Question): Promise<void> {
