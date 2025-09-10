@@ -22,7 +22,11 @@
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:studio": "prisma studio",
-    "prisma:fix": "powershell -ExecutionPolicy Bypass -File ./fix-prisma-windows.ps1"
+    "prisma:fix": "powershell -ExecutionPolicy Bypass -File ./fix-prisma-windows.ps1",
+    "docker:redis": "docker-compose --profile cache up -d",
+    "docker:postgres": "docker-compose --profile database up -d",
+    "docker:all": "docker-compose --profile full up -d",
+    "docker:stop": "docker-compose down"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.883.0",
@@ -36,6 +40,7 @@
     "@prisma/client": "^6.14.0",
     "bcryptjs": "^3.0.2",
     "dayjs": "^1.11.13",
+    "ioredis": "^5.7.0",
     "passport-jwt": "^4.0.1",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",

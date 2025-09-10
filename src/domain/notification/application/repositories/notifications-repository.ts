@@ -1,7 +1,7 @@
 import { Notification } from '../../enterprise/entities/notification'
 
-export interface INotificationsRepository {
-  findById(id: string): Promise<Notification | null>
-  create(notification: Notification): Promise<void>
-  save(notification: Notification): Promise<Notification>
+export abstract class INotificationsRepository {
+  abstract findById(id: string): Promise<Notification | null>
+  abstract create(notification: Notification): Promise<void>
+  abstract save(notification: Notification): Promise<Notification>
 }
