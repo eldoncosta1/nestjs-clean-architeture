@@ -88,22 +88,55 @@ Implementa os adaptadores e integrações externas:
 - [🎯 Princípios SOLID](./solid-principles.md)  
 - [⚡ Domain Events e Event-Driven Architecture](./domain-events.md)
 
+## ⚠️ Limitações Conhecidas
+
+### 🔧 Transações Multi-Domínio com Prisma
+
+O projeto atualmente utiliza o Prisma ORM para persistência de dados. Embora o Prisma seja uma ferramenta robusta e de fácil uso, ele apresenta algumas limitações importantes em cenários de arquitetura orientada a domínios:
+
+#### 🚫 Limitação Principal
+- **Transações Multi-Domínio**: O Prisma não oferece suporte nativo para transações que englobem múltiplos domínios/contextos
+- **Eventos Cross-Boundary**: Algumas operações no repositório precisam disparar eventos para outros domínios, mas não é possível garantir consistência transacional entre eles
+
+#### 🔄 Cenários Problemáticos
+Exemplos onde essa limitação se manifesta:
+- Criação de uma resposta que precisa disparar notificação (Forum → Notification)
+- Atualização de estatísticas que afeta múltiplos agregados
+- Operações que requerem rollback coordenado entre domínios
+
+#### 🛠️ Alternativa: MikroORM
+Para projetos que exigem maior controle sobre transações distribuídas, o **MikroORM** se apresenta como uma alternativa mais adequada:
+
+**Vantagens do MikroORM:**
+- ✅ Suporte nativo a transações distribuídas
+- ✅ Melhor controle sobre Unit of Work pattern
+- ✅ Integração mais natural com padrões DDD
+- ✅ Maior flexibilidade para implementar Sagas/Outbox Pattern
+
+**Considerações para Migração:**
+- Análise de custo-benefício baseada na complexidade das transações
+- Impacto na curva de aprendizado da equipe
+- Avaliação da necessidade real de consistência forte vs. eventual
+
+> 💡 **Recomendação**: Para casos simples, o Prisma atende bem. Para sistemas com alta complexidade transacional entre domínios, considere migrar para MikroORM ou implementar padrões como Saga/Outbox.
+
 ## 🔧 Como Começar
 
 1. **Instalação das dependências**:
    ```bash
-   npm install
+   pnpm install
    ```
 
 2. **Configuração do banco de dados**:
    ```bash
-   npx prisma generate
-   npx prisma db push
+   pnpm docker:all
+   pnpm prisma migrate dev
+   pnpm prisma generate   
    ```
 
 3. **Execução da aplicação**:
    ```bash
-   npm run start:dev
+   pnpm run start:dev
    ```
 
 ## 🤝 Contribuindo

@@ -18,7 +18,7 @@ POST {{baseUrl}}/sessions
 Content-Type: application/json
 
 {
-  "email": "john.doe+2@example.com",
+  "email": "john.doe+3@example.com",
   "password": "123456"
 }
 
@@ -40,3 +40,23 @@ Authorization: Bearer {{access_token}}
 GET {{baseUrl}}/questions?page=1
 Content-Type: application/json
 Authorization: Bearer {{access_token}}
+
+###
+
+# @name createAnswer
+POST {{baseUrl}}/questions/{{fetchRecentQuestions.response.body.questions[0].id}}/answers
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+{
+  "content": "Esta é uma resposta de teste para verificar se o subscriber está funcionando!"
+}
+
+###
+
+# @name fetchNotifications
+GET {{baseUrl}}/notifications
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+###

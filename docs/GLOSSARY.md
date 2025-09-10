@@ -66,7 +66,7 @@ Este glossário explica todos os termos técnicos usados no projeto de forma sim
 **Exemplo**: `CreateQuestionUseCase` permite que um usuário crie uma pergunta.
 
 ### **Value Object** (Objeto de Valor)
-**O que é**: Um objeto que representa um valor ou conceito, mas não tem identidade própria.
+**O que é**: Uma característica fundamental é substituir um ou mais tipos primitivos por um objeto que representa o seu valor, eventualmente também oferecendo determinados tipos de comportamento.
 **Características**: Dois value objects são iguais se todos os seus dados são iguais.
 **Exemplo**: `Slug` - dois slugs são iguais se têm o mesmo texto.
 
